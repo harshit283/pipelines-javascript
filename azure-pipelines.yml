@@ -1,42 +1,50 @@
-# Node.js
-# Build a general Node.js project with npm.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
-trigger:
-- master
+stages:
+- stage: Build_Source_Code # Build Source Code for Dotnet Core Web App
+  jobs:
+  - job: Build
+    pool:
+     vmImage: 'ubuntu-latest'
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '10.x'
+      displayName: 'Install Node.js'
 
-pool:
-  vmImage: 'ubuntu-latest'
-
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '10.x'
-  displayName: 'Install Node.js'
-
-- script: |
-    npm install
-    npm run build
-  displayName: 'npm install and build'
+    - script: |
+        npm install
+        npm run build
+      displayName: 'npm install and build'
 
 
-- task: CopyFiles@1
-  inputs:
-    sourceFolder: '$(Build.SourcesDirectory)' 
-    #contents: '**' 
-    targetFolder: '$(Build.ArtifactStagingDirectory)'
-    #cleanTargetFolder: false # Optional
-    #overWrite: false # Optional
-    #flattenFolders: false # Optional
-    #preserveTimestamp: false # Optional
+    - task: CopyFiles@1
+      inputs:
+        sourceFolder: '$(Build.SourcesDirectory)' 
+        targetFolder: '$(Build.ArtifactStagingDirectory)'
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
-    #artifactName: 'drop' 
-    #publishLocation: 'Container' # Options: container, filePath
-    #targetPath: # Required when publishLocation == FilePath
-    #parallel: false # Optional
-    #parallelCount: # Optional
-    #fileCopyOptions: #Optional
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: drop
+        
+
+- stage: Deploy_In_Prod 
+  jobs:
+  - deployment: azure_web_app_prod
+    variables:
+      WebAppName: 'haaggarw-test'
+    environment: 'prod-environment'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - powershell: ls -r $(Pipeline.workspace)
+          - task: AzureRMWebAppDeployment@4
+            displayName: Azure App Service Deploy
+            inputs:
+              WebAppKind: webApp
+              WebAppName: $(WebAppName)
+              ConnectedServiceName: 'haaggarw-new-test-connection'
+              packageForLinux: '$(Pipeline.workspace)/drop'
+
+              
