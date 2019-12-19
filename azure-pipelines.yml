@@ -47,7 +47,7 @@ stages:
               Package: $(Pipeline.workspace)/drop
 
 - stage: Deploy_In_Prod 
-  dependsOn: DeDeploy_In_QA
+  dependsOn: Deploy_In_QA
   jobs:
   - deployment: azure_web_app_prod
     variables:
