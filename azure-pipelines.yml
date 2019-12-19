@@ -47,12 +47,12 @@ stages:
               Package: $(Pipeline.workspace)/drop
 
 - stage: Deploy_In_Prod 
+  dependsOn: DeDeploy_In_QA
   jobs:
   - deployment: azure_web_app_prod
     variables:
       WebAppName: 'haaggarw-test'
     environment: 'prod-environment'
-    dependsOn: DeDeploy_In_QA
     strategy:
       runOnce:
         deploy:
