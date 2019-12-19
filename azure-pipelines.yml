@@ -28,17 +28,35 @@ stages:
         ArtifactName: drop
         
 
+- stage: Deploy_In_QA 
+  jobs:
+  - deployment: azure_web_app_qa
+    variables:
+      WebAppName: 'haaggarw-test-qa'
+    environment: 'qa-environment'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureRMWebAppDeployment@4
+            displayName: Azure App Service Deploy
+            inputs:
+              WebAppKind: webApp
+              ConnectedServiceName: 'haaggarw-new-test-connection'
+              WebAppName: $(WebAppName)
+              Package: $(Pipeline.workspace)/drop
+
 - stage: Deploy_In_Prod 
   jobs:
   - deployment: azure_web_app_prod
     variables:
       WebAppName: 'haaggarw-test'
     environment: 'prod-environment'
+    dependsOn: DeDeploy_In_QA
     strategy:
       runOnce:
         deploy:
           steps:
-          - powershell: ls -r $(Pipeline.workspace)
           - task: AzureRMWebAppDeployment@4
             displayName: Azure App Service Deploy
             inputs:
