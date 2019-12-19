@@ -32,7 +32,7 @@ stages:
   jobs:
   - deployment: azure_web_app_qa
     variables:
-      WebAppName: 'haaggarw-test-qa'
+      WebAppName: 'haaaggarw-test-qa'
     environment: 'qa-environment'
     strategy:
       runOnce:
