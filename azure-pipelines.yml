@@ -1,4 +1,6 @@
 
+trigger: none
+
 stages:
 - stage: Build_Source_Code # Build Source Code for Dotnet Core Web App
   jobs:
