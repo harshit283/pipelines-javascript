@@ -21,8 +21,6 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: drop
-        path: drop
-
     - name: 'Run Azure webapp deploy action using publish profile credentials'
       uses: azure/webapps-deploy@v1
       with:
