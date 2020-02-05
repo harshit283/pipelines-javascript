@@ -19,17 +19,17 @@ jobs:
         name: drop
         path: ./
         
-    - name: Download artifact
-      uses: actions/download-artifact@v1
-      with:
-          name: drop
+
     
   deploy: 
       needs: build
       runs-on: ubuntu-latest
       steps:
-
-            
+      - name: Download artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: drop
+        
       - uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
