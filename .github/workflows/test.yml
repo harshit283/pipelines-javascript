@@ -12,20 +12,22 @@ jobs:
       run: |
         npm install
         npm run build 
+        
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: drop
+        path: ./
+        
+    - name: Download artifact
+      uses: actions/download-artifact@v1
+      with:
+          name: drop
     
   deploy: 
       runs-on: ubuntu-latest
       steps:
-#       - name: Upload Artifact
-#         uses: actions/upload-artifact@v1
-#         with:
-#           name: drop
-#           path: ./
-        
-#       - name: Download artifact
-#         uses: actions/download-artifact@v1
-#         with:
-#             name: drop
+
             
       - uses: azure/login@v1
         with:
