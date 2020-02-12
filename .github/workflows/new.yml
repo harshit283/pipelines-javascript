@@ -1,5 +1,4 @@
-- name: Azure Pipelines Action
-  uses: Azure/pipelines@v1
+
 
 on: [push, pull_request]
 
